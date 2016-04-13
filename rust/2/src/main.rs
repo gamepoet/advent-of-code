@@ -13,32 +13,37 @@ fn main() {
   let reader = io::BufReader::new(fh);
 
   let mut total_paper_needed = 0;
+  let mut total_ribbon_needed = 0;
 
   for iter in reader.lines() {
+    // parse the package dimensions
     let line = iter.unwrap();
-    let parts: Vec<&str> = line.split('x').collect();
-    let l = parts[0].parse::<u32>().unwrap();
-    let w = parts[1].parse::<u32>().unwrap();
-    let h = parts[2].parse::<u32>().unwrap();
+    let dims_str: Vec<&str> = line.split('x').collect();
+    let dims_int = dims_str.iter().map(|x| x.parse::<u32>().unwrap());
+    let mut dims: Vec<u32> = dims_int.collect();
+    dims.sort();
 
-    let area0 = l*w;
-    let area1 = w*h;
-    let area2 = h*l;
+    // calculate paper area
+    let mut areas = vec![
+      dims[0] * dims[1],
+      dims[1] * dims[2],
+      dims[2] * dims[0],
+    ];
+    areas.sort();
 
-    let mut smallest_area = area0;
-    if area1 < smallest_area {
-      smallest_area = area1;
-    }
-    if area2 < smallest_area {
-      smallest_area = area2;
-    }
-
-    let surface_area = 2*area0 + 2*area1 + 2*area2;
-    let scrap_area = smallest_area;
+    let surface_area = areas.iter().map(|x| 2*x).fold(0, |accum, x| accum + x);
+    let scrap_area = areas[0];
     let package_area = surface_area + scrap_area;
 
     total_paper_needed += package_area;
+
+    // calculate ribbon
+    let ribbon_perimeter = 2*dims[0] + 2*dims[1];
+    let ribbon_bow = dims.iter().fold(1, |accum, x| accum * x);
+    let ribbon_len = ribbon_perimeter + ribbon_bow;
+
+    total_ribbon_needed += ribbon_len;
   }
 
-  println!("total paper needed: {}", total_paper_needed);
+  println!("total paper needed: {}, ribbon: {}", total_paper_needed, total_ribbon_needed);
 }
