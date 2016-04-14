@@ -32,8 +32,9 @@ fn main() {
 
   let mut number = 1;
   loop {
-    if number % 1000 == 0 {
-      print!("{}\r", number);
+    if number % 10000 == 0 {
+      print!("\r{}", number);
+      io::stdout().flush().ok().expect("Could not flush stdout");
     }
 
     let text = format!("{}{}", prefix, number);
@@ -41,8 +42,8 @@ fn main() {
     hasher.input_str(text.as_str());
     let hash = hasher.result_str();
 
-    if hash.starts_with("00000") {
-      println!("[{}] {} {}", number, text, hash);
+    if hash.starts_with("000000") {
+      println!("\n[{}] {} {}", number, text, hash);
       break;
     }
 
