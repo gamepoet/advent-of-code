@@ -18,11 +18,19 @@ fn main() {
   };
 
   let mut houses = HashMap::new();
-  let mut pos = Point { x: 0, y: 0 };
-  houses.insert(pos, 1);
+  let mut pos_santa = Point { x: 0, y: 0 };
+  let mut pos_robo = pos_santa;
+  houses.insert(pos_santa, 1);
 
-  for b in fh.bytes() {
+  for (index, b) in fh.bytes().enumerate() {
     let c = b.unwrap() as char;
+
+    let mut pos = match index % 2 {
+      0 => &mut pos_santa,
+      1 => &mut pos_robo,
+      _ => panic!("not possible"),
+    };
+
     match c {
       '^' => { pos.y += 1; },
       'v' => { pos.y -= 1; },
@@ -32,7 +40,7 @@ fn main() {
       _   => panic!("unexpected input: {}", c),
     }
 
-    let visits = houses.entry(pos).or_insert(0);
+    let visits = houses.entry(*pos).or_insert(0);
     *visits += 1;
   }
 
