@@ -15,10 +15,10 @@ enum Inst {
 }
 
 struct Rect {
-    left: i32,
-    top: i32,
-    right: i32,
-    bottom: i32,
+    left: usize,
+    top: usize,
+    right: usize,
+    bottom: usize,
 }
 
 fn parse_instruction(line: &str) -> (Inst, Rect){
@@ -43,40 +43,41 @@ fn parse_instruction(line: &str) -> (Inst, Rect){
     return (inst, rect);
 }
 
-fn toggle(grid: &mut [[bool; 1000]; 1000], rect: &Rect) {
+fn toggle(grid: &mut [[i32; 1000]; 1000], rect: &Rect) {
     for y in rect.top..(rect.bottom+1) {
         for x in rect.left..(rect.right+1) {
-            grid[x as usize][y as usize] = !grid[x as usize][y as usize];
+            grid[x][y] += 2;
         }
     }
 }
 
-fn turn_off(grid: &mut [[bool; 1000]; 1000], rect: &Rect) {
+fn turn_off(grid: &mut [[i32; 1000]; 1000], rect: &Rect) {
     for y in rect.top..(rect.bottom+1) {
         for x in rect.left..(rect.right+1) {
-            grid[x as usize][y as usize] = false;
-        }
-    }
-}
-
-fn turn_on(grid: &mut [[bool; 1000]; 1000], rect: &Rect) {
-    for y in rect.top..(rect.bottom+1) {
-        for x in rect.left..(rect.right+1) {
-            grid[x as usize][y as usize] = true;
-        }
-    }
-}
-
-fn count_on(grid: &[[bool; 1000]; 1000]) -> i32 {
-    let mut count = 0;
-    for y in 0..1000 {
-        for x in 0..1000 {
-            if grid[x][y] {
-                count += 1;
+            grid[x][y] -= 1;
+            if grid[x][y] < 0 {
+                grid[x][y] = 0;
             }
         }
     }
-    return count;
+}
+
+fn turn_on(grid: &mut [[i32; 1000]; 1000], rect: &Rect) {
+    for y in rect.top..(rect.bottom+1) {
+        for x in rect.left..(rect.right+1) {
+            grid[x][y] += 1;
+        }
+    }
+}
+
+fn calc_brightness(grid: &[[i32; 1000]; 1000]) -> i32 {
+    let mut brightness = 0;
+    for y in 0..1000 {
+        for x in 0..1000 {
+            brightness += grid[x][y];
+        }
+    }
+    return brightness;
 }
 
 fn main() {
@@ -87,7 +88,7 @@ fn main() {
     };
     let reader = io::BufReader::new(fh);
 
-    let mut grid = [[false; 1000]; 1000];
+    let mut grid = [[0; 1000]; 1000];
 
     for line in reader.lines() {
         let (inst, rect) = parse_instruction(line.unwrap().trim_right());
@@ -98,5 +99,5 @@ fn main() {
         }
     }
 
-    println!("num on: {}", count_on(&grid));
+    println!("brightness: {}", calc_brightness(&grid));
 }
