@@ -1,3 +1,3 @@
-# Advent of Code 2015
+# Advent of Code
 
-This is my take on the advent of code challenge from http://adventofcode.com.
+This is my take on the advent of code challenges from http://adventofcode.com.
