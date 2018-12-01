@@ -1,0 +1,19 @@
+{
+  "name": "advent-of-code-2018",
+  "version": "0.0.0",
+  "description": "Advent of code 2018",
+  "main": "index.js",
+  "author": "Ben Scott",
+  "license": "MIT",
+  "private": true,
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.6"
+  }
+}
